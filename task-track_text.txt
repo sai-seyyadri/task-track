@@ -1,2 +1,2 @@
-Our group name is Terps and the members are Matthew Neufell, Ryan Frampton, and Sai Seyyadri.
+Our group name is Terps and the members are Matt Neufell, Ryan Frampton, and Sai Seyyadri.
 This project is a Task Management tool called Task Track. 
