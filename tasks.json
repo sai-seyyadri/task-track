@@ -1,0 +1,29 @@
+{
+    "tasks": [
+        {
+            "name": "Study for INST326 Exam",
+            "duration": 120,
+            "priority": 1,
+            "labels": ["work", "coding"],
+            "due_date": "2024-11-15"
+        },
+        {
+            "name": "Get Groceries",
+            "duration": 120,
+            "priority": 2,
+            "labels": ["shopping", "going out"],
+            "due_date": "2024-11-10"
+        }
+    ],
+    "time_slots": [
+        {
+            "start": "11-11-2024 09:00",
+            "end": "11-11-2024 11:00"
+        },
+        {
+            "start": "11-11-2024 4:00",
+            "end": "11-11-2024 6:00"
+        }
+    ]
+}
+
