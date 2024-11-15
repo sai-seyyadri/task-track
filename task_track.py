@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+import pandas as pd
+import json
 
 class TaskScheduler:
     #  Schedules tasks by keeping them in available time slots based on priority level and duration
@@ -7,6 +9,7 @@ class TaskScheduler:
         self.time_slots = []
         
     def schedule_tasks(self):
+        """Author Saisidharth Seyyadri"""
         # Organizes tasks into available time slots and prioritizes higher priority levels and earlier due dates
         self.tasks.sort(key= lambda task: (task.priority, datetime.strptime(task.due_date, "%Y-%m-%d")), reverse= True)
         schedule = []
@@ -25,12 +28,13 @@ class TaskScheduler:
         return schedule
     
     def split_up_tasks(self):
-        """Splits a task across multiple time slots if the duration for that task
+        """Author Ryan Frampton
+        Splits a task across multiple time slots if the duration for that task
            excedes the amount of time available in the time slot
         
         """
         def time_to_minutes(self, str):
-            """ Helper method that converts the time into minutes
+            """Helper method that converts the time into minutes
             
             Returns:
                 int: the total minutes 
@@ -75,3 +79,16 @@ class TaskScheduler:
                     index += 1
         
         return schedule
+    
+    def get_data(filepath):
+        """
+        Author Matthew Neufell
+        Reads in data from json file
+        
+        Returns:
+            df(DataFrame): DataFrame with the keys "tasks", "time_slots"
+        """
+        with open(filepath, 'r', encoding = "utf-8") as f:
+            data = json.load(f)
+            df = pd.DataFrame(data)
+            return df 
