@@ -3,14 +3,40 @@ import pandas as pd
 import json
 
 class TaskScheduler:
-    #  Schedules tasks by keeping them in available time slots based on priority level and duration
+    """
+      A class to manage and schedule tasks into available time slots based on
+      priority level, due date, and duration.
+      
+      Attributes:
+        tasks (list): A list of task objects or dictionaries
+        priority (int): priority level of the task (higher is more important).
+        due_date (str): due date of the task in "YYYY-MM-DD" format.
+        duration (int): duration of the task in minutes.
+        time_slots (list): A list of tuples, containing the task object, 
+                           assigned start time (datetime object), and 
+                           assigned end time (datetime object).
+    """
     def __init__(self):
         self.tasks = []
         self.time_slots = []
         
     def schedule_tasks(self):
-        """Author Saisidharth Seyyadri"""
-        # Organizes tasks into available time slots and prioritizes higher priority levels and earlier due dates
+        """Author Saisidharth Seyyadri
+        
+        Organizes tasks into available time slots and prioritizes higher 
+        priority levels and earlier due dates. Tasks that fit into the current 
+        time slot are scheduled, and once scheduled, they are removed from the 
+        task list to avoid futher duplication.
+        
+        Returns:
+            list: A list of tuples, containing 
+                  the task object, assigned start time (datetime object), and 
+                  assigned end time (datetime object)
+                  
+        Borrowed Code URL: https://docs.python.org/3/library/datetime.html
+        Description: Used "datetime.strptime" for parsing due dates and 
+                     "timedelta" for handling task durations.
+        """
         self.tasks.sort(key= lambda task: (task.priority, datetime.strptime(task.due_date, "%Y-%m-%d")), reverse= True)
         schedule = []
         
