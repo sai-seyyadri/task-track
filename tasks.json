@@ -4,7 +4,63 @@
             "name": "Study for INST326 Exam",
             "duration": 120,
             "priority": 1,
-            "labels": ["work", "coding"],
+            "labels": ["study", "coding"],
+            "due_date": "2024-11-15"
+        },
+        {
+            "name": "Pay Car Payment",
+            "duration": 10,
+            "priority": 1,
+            "labels": ["bill", "car"],
+            "due_date": "2024-11-30"
+        },
+        {
+            "name": "Pay Phone Bill",
+            "duration": 10,
+            "priority": 1,
+            "labels": ["bill", "phone"],
+            "due_date": "2024-11-30"
+        },
+        {
+            "name": "Rake the Leaves ",
+            "duration": 60,
+            "priority": 3,
+            "labels": ["work", "chore"],
+            "due_date": "2024-11-24"
+        },
+        {
+            "name": "Get Gas",
+            "duration": 10,
+            "priority": 2,
+            "labels": ["car", "travel"],
+            "due_date": "2024-11-20"
+        },
+        {
+            "name": "Study for Inst314 Exam",
+            "duration": 120,
+            "priority": 2,
+            "labels": ["study", "coding"],
+            "due_date": "2024-11-25"
+        },
+        {
+            "name": "Workout #1",
+            "duration": 60,
+            "priority": 3,
+            "labels": ["exercise", "fitness"],
+            "due_date": "2024-11-17"
+        },
+        {
+            "name": "workout #2",
+            "duration": 60,
+            "priority": 3,
+            "labels": ["exercise", "fitness"],
+            "due_date": "2024-11-27"
+        },
+        {
+            "name": "Wash car",
+            "duration": 30,
+            "priority": 3,
+            "labels": ["car", "chore"],
             "due_date": "2024-11-15"
         },
         {
@@ -19,6 +75,38 @@
         {
             "start": "11-11-2024 09:00",
             "end": "11-11-2024 11:00"
+        },
+        {
+            "start": "11-30-2024 10:50",
+            "end": "11-30-2024 11:00"
+        },
+        {
+            "start": "11-30-2024 11:05",
+            "end": "11-30-2024 11:15"
+        },
+        {
+            "start": "11-23-2024 10:00",
+            "end": "11-23-2024 11:00"
+        },
+        {
+            "start": "11-15-2024 1:00",
+            "end": "11-15-2024 1:10"
+        },
+        {
+            "start": "11-17-2024 09:00",
+            "end": "11-17-2024 11:00"
+        },
+        {
+            "start": "11-16-2024 2:00",
+            "end": "11-16-2024 3:00"
+        },
+        {
+            "start": "11-26-2024 2:00",
+            "end": "11-26-2024 3:00"
+        },
+        {
+            "start": "11-14-2024 1:00",
+            "end": "11-14-2024 1:30"
         },
         {
             "start": "11-11-2024 4:00",
