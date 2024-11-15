@@ -23,3 +23,55 @@ class TaskScheduler:
                 else:
                     break
         return schedule
+    
+    def split_up_tasks(self):
+        """Splits a task across multiple time slots if the duration for that task
+           excedes the amount of time available in the time slot
+        
+        """
+        def time_to_minutes(self, str):
+            """ Helper method that converts the time into minutes
+            
+            Returns:
+                int: the total minutes 
+            """
+            time_parts = str.split(":")
+            hours = int(time_parts[0])
+            minutes = int(time_parts[1])
+            
+            return hours * 60 + minutes
+        
+        
+        self.tasks.sort(key=lambda task: (task.priority, task.due_date), reverse= True)
+        schedule = []
+            
+        available_slots = [
+                           (self.time_to_minutes(slot["start"]),  \
+                           self.time_to_minutes(slot["end"]))  
+                           for slot in self.time_slots]
+        available_slots.sort()
+        
+        index = 0
+        for task in self.tasks:
+            remaining_time = task.duration
+
+            while remaining_time > 0 and index < len(available_slots):
+                start_time, end_time = available_slots[index]
+                slot_duration = end_time - start_time
+                
+                if slot_duration <= 0:
+                    index += 1
+                    continue
+                
+                time_to_schedule = min(remaining_time, slot_duration)
+                task_start_time = start_time
+                task_end_time = start_time + time_to_schedule
+                schedule.append(task.name, task_start_time, task_end_time)
+                
+                remaining_time = remaining_time - time_to_schedule
+                available_slots[index] = (task_end_time, end_time)
+                
+                if available_slots[index][0] >= end_time:
+                    index += 1
+        
+        return schedule
