@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
+from argparse import ArgumentParser
 import pandas as pd
 import json
-
+import sys
 class TaskScheduler:
     #  Schedules tasks by keeping them in available time slots based on priority level and duration
     def __init__(self):
@@ -91,4 +92,36 @@ class TaskScheduler:
         with open(filepath, 'r', encoding = "utf-8") as f:
             data = json.load(f)
             df = pd.DataFrame(data)
-            return df 
+            return df
+ 
+#def main():
+    #tasks = TaskScheduler()     
+
+    
+
+
+
+
+def parse_args(arglist):
+    """Parse command line arguments.
+    
+    Expect one argument:
+        - str: path to a json file containing tasks and time_slots.
+    
+    
+    Args:
+        arglist (list of dictionaries): arguments from the command line.
+    
+    Returns:
+        namespace: the parsed arguments, as a namespace.
+
+    """
+    parser = ArgumentParser()
+    parser.add_argument("filepath", help="file containing tasks and time_slots")
+    return parser.parse_args(arglist)
+
+
+
+if __name__ == "__main__":
+    args = parse_args(sys.argv[1:])
+    #main(args.filepath)
