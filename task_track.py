@@ -19,11 +19,10 @@ class TaskScheduler:
     def __init__(self):
         self.tasks = []
         self.time_slots = []
+        self.schedule = []
         
     def schedule_tasks(self):
-        """Author Saisidharth Seyyadri
-        
-        Organizes tasks into available time slots and prioritizes higher 
+        """Organizes tasks into available time slots and prioritizes higher 
         priority levels and earlier due dates. Tasks that fit into the current 
         time slot are scheduled, and once scheduled, they are removed from the 
         task list to avoid futher duplication.
@@ -37,8 +36,9 @@ class TaskScheduler:
         Description: Used "datetime.strptime" for parsing due dates and 
                      "timedelta" for handling task durations.
         """
-        self.tasks.sort(key= lambda task: (task.priority, datetime.strptime(task.due_date, "%Y-%m-%d")), reverse= True)
-        schedule = []
+        self.tasks.sort(key= lambda task: (task['priority'], 
+                        datetime.strptime(task['due_date'], "%Y-%m-%d")), 
+                        reverse= True)
         
         for start_time, end_time in self.time_slots:
             current_time = start_time
@@ -46,16 +46,15 @@ class TaskScheduler:
                 task = self.tasks[0]
                 task_end_time = current_time + timedelta(minutes=task.duration)
                 if task_end_time <= end_time:
-                    schedule.append((task, current_time, task_end_time))
+                    self.schedule.append((task, current_time, task_end_time))
                     current_time = task_end_time
                     self.tasks.pop(0)
                 else:
                     break
-        return schedule
+        return self.schedule
     
     def split_up_tasks(self):
-        """Author Ryan Frampton
-        Splits a task across multiple time slots if the duration for that task
+        """Splits a task across multiple time slots if the duration for that task
            excedes the amount of time available in the time slot
         
         """
@@ -72,8 +71,7 @@ class TaskScheduler:
             return hours * 60 + minutes
         
         
-        self.tasks.sort(key=lambda task: (task.priority, task.due_date), reverse= True)
-        schedule = []
+        self.tasks.sort(key=lambda task: (task['priority'], task['due_date']), reverse= True)
             
         available_slots = [
                            (self.time_to_minutes(slot["start"]),  \
@@ -96,7 +94,7 @@ class TaskScheduler:
                 time_to_schedule = min(remaining_time, slot_duration)
                 task_start_time = start_time
                 task_end_time = start_time + time_to_schedule
-                schedule.append(task.name, task_start_time, task_end_time)
+                self.schedule.append(task.name, task_start_time, task_end_time)
                 
                 remaining_time = remaining_time - time_to_schedule
                 available_slots[index] = (task_end_time, end_time)
@@ -104,17 +102,30 @@ class TaskScheduler:
                 if available_slots[index][0] >= end_time:
                     index += 1
         
-        return schedule
+        return self.schedule
+     
+    def reschedule_missed_tasks(self, tasks):
+        pass
     
-    def get_data(filepath):
-        """
-        Author Matthew Neufell
-        Reads in data from json file
+    def get_data(self, filepath):
+        """Reads in data from json file
         
         Returns:
             df(DataFrame): DataFrame with the keys "tasks", "time_slots"
         """
         with open(filepath, 'r', encoding = "utf-8") as f:
             data = json.load(f)
-            df = pd.DataFrame(data)
-            return df 
+            self.tasks = data["tasks"]
+        return data 
+
+def main():
+    scheduler = TaskScheduler()
+    scheduler.get_data("tasks.json")
+    scheduler.schedule_tasks()
+    
+    print("Scheduled Tasks: ")
+    for task, start_time, end_time in scheduler.schedule:
+        print(f"Task: {task['name']}, Start: {start_time}, End: {end_time}") 
+
+if __name__ == "__main__":
+    main()
