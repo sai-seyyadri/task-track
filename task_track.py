@@ -3,6 +3,7 @@ from argparse import ArgumentParser
 import pandas as pd
 import json
 import sys
+
 class TaskScheduler:
     """
       A class to manage and schedule tasks into available time slots based on
@@ -45,7 +46,7 @@ class TaskScheduler:
             current_time = start_time
             while current_time < end_time and self.tasks:
                 task = self.tasks[0]
-                task_end_time = current_time + timedelta(minutes=task.duration)
+                task_end_time = current_time + timedelta(minutes=task['duration'])
                 if task_end_time <= end_time:
                     self.schedule.append((task, current_time, task_end_time))
                     current_time = task_end_time
@@ -82,7 +83,7 @@ class TaskScheduler:
         
         index = 0
         for task in self.tasks:
-            remaining_time = task.duration
+            remaining_time = task['duration']
 
             while remaining_time > 0 and index < len(available_slots):
                 start_time, end_time = available_slots[index]
@@ -117,16 +118,46 @@ class TaskScheduler:
         with open(filepath, 'r', encoding = "utf-8") as f:
             data = json.load(f)
             self.tasks = data["tasks"]
+            self.time_slots = [
+            (datetime.strptime(slot["start"], "%m-%d-%Y %H:%M"),
+             datetime.strptime(slot["end"], "%m-%d-%Y %H:%M"))
+            for slot in data["time_slots"]
+        ]
         return data 
+    
+def parse_args(arglist):
+    """Parse command line arguments.
+    
+    Expect one argument:
+        - str: path to a json file containing tasks and time_slots.
+    
+    
+    Args:
+        arglist (list of dictionaries): arguments from the command line.
+    
+    Returns:
+        namespace: the parsed arguments, as a namespace.
 
-def main():
+    """
+    parser = ArgumentParser()
+    parser.add_argument("filepath", help="file containing tasks and time_slots")
+    return parser.parse_args(arglist)
+
+
+def main(filepath):
     scheduler = TaskScheduler()
-    scheduler.get_data("tasks.json")
+    scheduler.get_data(filepath)
     scheduler.schedule_tasks()
     
     print("Scheduled Tasks: ")
-    for task, start_time, end_time in scheduler.schedule:
-        print(f"Task: {task['name']}, Start: {start_time}, End: {end_time}") 
-
+    
+    if scheduler.schedule:
+        for task, start_time, end_time in scheduler.schedule:
+            print(f"Task: {task['name']}, Start: {start_time}, End: {end_time}")
+    else:
+        print("No tasks could be scheduled.")
+    
+    
 if __name__ == "__main__":
-    main()
+    args = parse_args(sys.argv[1:])
+    main(args.filepath)
