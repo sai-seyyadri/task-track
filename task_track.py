@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 from argparse import ArgumentParser
-import pandas as pd
 import json
 import sys
 
@@ -55,56 +54,46 @@ class TaskScheduler:
                     break
         return self.schedule
     
-    def split_up_tasks(self):
-        """Splits a task across multiple time slots if the duration for that task
-           excedes the amount of time available in the time slot
-        
+    def split_up_tasks(self, unscheduled_tasks):
         """
-        def time_to_minutes(self, str):
-            """Helper method that converts the time into minutes
-            
-            Returns:
-                int: the total minutes 
-            """
-            time_parts = str.split(":")
-            hours = int(time_parts[0])
-            minutes = int(time_parts[1])
-            
-            return hours * 60 + minutes
-        
-        
-        self.tasks.sort(key=lambda task: (task['priority'], task['due_date']), reverse= True)
-            
-        available_slots = [
-                           (self.time_to_minutes(slot["start"]),  \
-                           self.time_to_minutes(slot["end"]))  
-                           for slot in self.time_slots]
-        available_slots.sort()
-        
-        index = 0
-        for task in self.tasks:
-            remaining_time = task['duration']
+        Splits tasks across multiple time slots if their duration exceeds
+        the available time in a single slot.
 
-            while remaining_time > 0 and index < len(available_slots):
-                start_time, end_time = available_slots[index]
-                slot_duration = end_time - start_time
-                
-                if slot_duration <= 0:
-                    index += 1
-                    continue
-                
-                time_to_schedule = min(remaining_time, slot_duration)
-                task_start_time = start_time
-                task_end_time = start_time + time_to_schedule
-                self.schedule.append(task.name, task_start_time, task_end_time)
-                
-                remaining_time = remaining_time - time_to_schedule
-                available_slots[index] = (task_end_time, end_time)
-                
-                if available_slots[index][0] >= end_time:
-                    index += 1
-        
-        return self.schedule
+        Args:
+            unscheduled_tasks (list): Tasks that could not be scheduled fully.
+
+        Returns:
+            None
+        """
+        for entry in unscheduled_tasks:
+            task = entry["task"]
+            remaining_time = entry["remaining_time"]
+
+            for i in range(len(self.time_slots)):
+                start_time, end_time = self.time_slots[i]
+                slot_duration = (end_time - start_time).total_seconds() // 60
+
+                if slot_duration > 0 and remaining_time > 0:
+                    time_to_schedule = min(remaining_time, slot_duration)
+                    task_start_time = start_time
+                    task_end_time = start_time + timedelta(minutes=time_to_schedule)
+
+                    self.schedule.append({
+                        "task": task,
+                        "start_time": task_start_time,
+                        "end_time": task_end_time,
+                    })
+
+                    self.time_slots[i] = (task_end_time, end_time)
+
+                    remaining_time -= time_to_schedule
+
+                    if self.time_slots[i][0] >= end_time:
+                        self.time_slots.pop(i)
+                        break
+
+                if remaining_time <= 0:
+                    break
      
     def reschedule_missed_tasks(self, tasks):
         pass
@@ -119,8 +108,8 @@ class TaskScheduler:
             data = json.load(f)
             self.tasks = data["tasks"]
             self.time_slots = [
-            (datetime.strptime(slot["start"], "%m-%d-%Y %H:%M"),
-             datetime.strptime(slot["end"], "%m-%d-%Y %H:%M"))
+            (datetime.strptime(slot["start"], "%Y-%m-%d %H:%M"),
+             datetime.strptime(slot["end"], "%Y-%m-%d %H:%M"))
             for slot in data["time_slots"]
         ]
         return data 
@@ -140,14 +129,16 @@ def parse_args(arglist):
 
     """
     parser = ArgumentParser()
-    parser.add_argument("filepath", help="file containing tasks and time_slots")
+    parser.add_argument("filepath", help="file containing tasks and time slots")
     return parser.parse_args(arglist)
 
 
 def main(filepath):
     scheduler = TaskScheduler()
     scheduler.get_data(filepath)
+    
     scheduler.schedule_tasks()
+    scheduler.split_up_tasks()
     
     print("Scheduled Tasks: ")
     
