@@ -3,6 +3,7 @@ from argparse import ArgumentParser
 import pandas as pd
 import json
 import sys
+import matplotlib.pyplot as plt
 
 class TaskScheduler:
     """
@@ -24,36 +25,50 @@ class TaskScheduler:
         self.schedule = []
         
     def schedule_tasks(self):
-        """Organizes tasks into available time slots and prioritizes higher 
-        priority levels and earlier due dates. Tasks that fit into the current 
-        time slot are scheduled, and once scheduled, they are removed from the 
-        task list to avoid futher duplication.
-        
-        Returns:
-            list: A list of tuples, containing 
-                  the task object, assigned start time (datetime object), and 
-                  assigned end time (datetime object)
-                  
+        """
+        Schedules tasks into available time slots. Tasks that don't fit
+        entirely into one slot are passed to split_up_tasks.
+
         Borrowed Code URL: https://docs.python.org/3/library/datetime.html
         Description: Used "datetime.strptime" for parsing due dates and 
                      "timedelta" for handling task durations.
         """
-        self.tasks.sort(key= lambda task: (task['priority'], 
-                        datetime.strptime(task['due_date'], "%Y-%m-%d")), 
-                        reverse= True)
-        
-        for start_time, end_time in self.time_slots:
-            current_time = start_time
-            while current_time < end_time and self.tasks:
-                task = self.tasks[0]
-                task_end_time = current_time + timedelta(minutes=task.duration)
-                if task_end_time <= end_time:
-                    self.schedule.append((task, current_time, task_end_time))
-                    current_time = task_end_time
-                    self.tasks.pop(0)
-                else:
-                    break
-        return self.schedule
+        self.tasks.sort(
+            key=lambda task: (task["priority"], datetime.strptime(task["due_date"], "%Y-%m-%d")),
+            reverse=True,
+        )
+
+        unscheduled_tasks = []
+
+        for task in self.tasks:
+            remaining_time = task["duration"]  
+            for i in range(len(self.time_slots)):
+                start_time, end_time = self.time_slots[i]
+                slot_duration = (end_time - start_time).total_seconds() // 60 
+
+                if remaining_time > 0 and slot_duration > 0:
+                    time_to_schedule = min(remaining_time, slot_duration)
+                    task_start_time = start_time
+                    task_end_time = start_time + timedelta(minutes=time_to_schedule)
+
+                    self.schedule.append({
+                        "task": task,
+                        "start_time": task_start_time,
+                        "end_time": task_end_time,
+                    })
+
+                    self.time_slots[i] = (task_end_time, end_time)
+
+                    remaining_time -= time_to_schedule
+
+                    if self.time_slots[i][0] >= end_time:
+                        self.time_slots.pop(i)
+                        break
+
+            if remaining_time > 0:
+                unscheduled_tasks.append({"task": task, "remaining_time": remaining_time})
+
+        self.split_up_tasks(unscheduled_tasks)
     
     def split_up_tasks(self, unscheduled_tasks):
         """
@@ -126,7 +141,43 @@ class TaskScheduler:
             print(f"Error: The file '{filepath}' was not found.")
             return None
                 
-                
+    def print_schedule(self):
+        """
+        Prints the scheduled tasks in a readable format.
+        """
+        print("Scheduled Tasks:")
+        for entry in self.schedule:
+            task = entry["task"]
+            print(f"Task: {task['name']}, Start: {entry['start_time']}, End: {entry['end_time']}")
+
+    def visualize_schedule(self):
+        """
+        Visualizes the daily distribution of tasks as a stacked bar chart,
+        ensuring tasks are ordered by their start time within each day.
+        """
+        if not self.schedule:
+            print("No tasks scheduled to visualize.")
+            return
+
+        data = []
+        for entry in sorted(self.schedule, key=lambda x: x['start_time']): 
+            task = entry["task"]
+            start_date = entry["start_time"].date()
+            duration = (entry["end_time"] - entry["start_time"]).total_seconds() / 60 
+            data.append({"Date": start_date, "Task": task["name"], "Duration": duration})
+
+        df = pd.DataFrame(data)
+
+
+        pivot = df.pivot(index="Date", columns="Task", values="Duration")
+
+        pivot.plot(kind="bar", stacked=True, figsize=(10, 6))
+        plt.xlabel("Date")
+        plt.ylabel("Duration (Minutes)")
+        plt.title("Daily Task Allocation")
+        plt.legend(title="Tasks", loc="upper left") 
+        plt.tight_layout() 
+        plt.show()                
                 
         
 
