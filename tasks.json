@@ -4,70 +4,60 @@
             "name": "Study for INST326 Exam",
             "duration": 120,
             "priority": 1,
-            "labels": ["study", "coding"],
             "due_date": "2024-11-15"
         },
         {
             "name": "Pay Car Payment",
             "duration": 10,
             "priority": 1,
-            "labels": ["bill", "car"],
             "due_date": "2024-11-30"
         },
         {
             "name": "Pay Phone Bill",
             "duration": 10,
             "priority": 1,
-            "labels": ["bill", "phone"],
             "due_date": "2024-11-30"
         },
         {
-            "name": "Rake the Leaves ",
+            "name": "Rake the Leaves",
             "duration": 60,
             "priority": 3,
-            "labels": ["work", "chore"],
             "due_date": "2024-11-24"
         },
         {
             "name": "Get Gas",
             "duration": 10,
             "priority": 2,
-            "labels": ["car", "travel"],
             "due_date": "2024-11-20"
         },
         {
-            "name": "Study for Inst314 Exam",
+            "name": "Study for INST314 Exam",
             "duration": 120,
             "priority": 2,
-            "labels": ["study", "coding"],
             "due_date": "2024-11-25"
         },
         {
-            "name": "Workout #1",
+            "name": "Workout",
             "duration": 60,
             "priority": 3,
-            "labels": ["exercise", "fitness"],
             "due_date": "2024-11-17"
         },
         {
-            "name": "workout #2",
+            "name": "Jogging",
             "duration": 60,
             "priority": 3,
-            "labels": ["exercise", "fitness"],
             "due_date": "2024-11-27"
         },
         {
             "name": "Wash car",
             "duration": 30,
             "priority": 3,
-            "labels": ["car", "chore"],
             "due_date": "2024-11-15"
         },
         {
             "name": "Get Groceries",
             "duration": 120,
             "priority": 2,
-            "labels": ["shopping", "going out"],
             "due_date": "2024-11-10"
         }
     ],
