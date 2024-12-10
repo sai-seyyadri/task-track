@@ -3,7 +3,7 @@
  **tasks.json**: JSON file that serves as the input data for task_track.py, containing different tasks and available time slots.  
  **README.md**: Documentation for understanding the project, its contents, and functionality.  
 
-## ** Running the program ** 
+## **Running the program** 
  Run this on the command line: python task_track.py --file tasks.json  
 
 ## ** Using and Interpreting the program **
@@ -19,7 +19,7 @@
  The legend in the top left corner maps each color to its corresponding task name, making it easy to identify which part of the bar corresponds to which task.  
  The terminal output provides detailed scheduling information, while the graph offers a quick visual overview of how tasks are distributed. Together, they help users understand their schedule and ensure that no time slots are overbooked or left empty.  
 
-## *Input format requirements:* 
+## *Input format requirements* 
  The program expects an input JSON file, which is already provided, but it can be noted that it should include the following keys for each task:  
  "name": The task's name (ex: "Study for INST326 Exam")  
  "duration": The task's duration in minutes (ex: 120)  
@@ -29,16 +29,18 @@
 
 
 ## **Annotated Bibliography**
+Borrowed Code URL: https://docs.python.org/3/library/datetime.html
+Description: Used "datetime.strptime" for parsing due dates and "timedelta" for handling task durations.
 
 
 
-## ** Attribution ** 
+## **Attribution** 
 | **Method/Function**      | **Primary Author**       | **Techniques Demonstrated**               |
 |---------------------------|--------------------------|-------------------------------------------|
-| `schedule_tasks`          | Saisidharth Seyyadri    | Sorting with key functions (using lambda) |
+| `schedule_tasks`          | Saisidharth Seyyadri    | Sorting with key functions (using lambda) with list.sort() |
 | `split_up_tasks`          | Ryan Frampton           | Sequence unpacking                        |
-| `get_data`                | Matthew Neufell         | json.load()                               |
-| `visualize_schedule`      | Saisidharth Seyyadri    | Visualizing data with pyplot              |
+| `get_data`                | Matthew Neufell         | json.load(), with statement               |
+| `visualize_schedule`      | Saisidharth Seyyadri    | Visualizing data with pyplot, Pandas DataFrames operations              |
 | `print_schedule`          | Ryan Frampton           | f-strings containing expressions          |
 | `main`                    | Matthew Neufell         | The ArgumentParser class from the argparse module|
 

@@ -2,24 +2,31 @@ from datetime import datetime, timedelta
 from argparse import ArgumentParser
 import pandas as pd
 import json
-import sys
 import matplotlib.pyplot as plt
 
 class TaskScheduler:
     """
-      A class to manage and schedule tasks into available time slots based on
-      priority level, due date, and duration.
-      
-      Attributes:
-        tasks (list): A list of task objects or dictionaries
-        priority (int): priority level of the task (higher is more important).
-        due_date (str): due date of the task in "YYYY-MM-DD" format.
-        duration (int): duration of the task in minutes.
-        time_slots (list): A list of tuples, containing the task object, 
-                           assigned start time (datetime object), and 
-                           assigned end time (datetime object).
+    A class to manage and schedule tasks into available time slots.
+    based on priority level and due date.
+
+    Attributes:
+        tasks (list): A list of task dictionaries containing task details.
+        time_slots (list of tuple): A list of tuples, each representing a 
+            start and end time for an available time slot.
+        schedule (list): A list of dictionaries, each containing task details
+            and their assigned start and end times.
     """
     def __init__(self):
+        """Initializes the TaskScheduler object.
+
+        Attributes:
+            tasks (list): Initialized as an empty list.
+            time_slots (list of tuple): Initialized as an empty list.
+            schedule (list): Initialized as an empty list.
+
+        Side effects:
+            Initializes the attributes "tasks", "time_slots", and "schedule".
+        """
         self.tasks = []
         self.time_slots = []
         self.schedule = []
@@ -32,6 +39,15 @@ class TaskScheduler:
         Borrowed Code URL: https://docs.python.org/3/library/datetime.html
         Description: Used "datetime.strptime" for parsing due dates and 
                      "timedelta" for handling task durations.
+                     
+        Side effects:
+            Modifies "self.schedule" and "self.time_slots"
+            
+        Primary Author:
+            Saisidharth Seyyadri
+
+        Techniques Demonstrated:
+            Sorting with key functions (using lambda) with list.sort()
         """
         self.tasks.sort(
             key=lambda task: (task["priority"], datetime.strptime(task["due_date"], "%Y-%m-%d")),
@@ -77,9 +93,15 @@ class TaskScheduler:
 
         Args:
             unscheduled_tasks (list): Tasks that could not be scheduled fully.
+            
+        Side effects:
+            Modifies `self.schedule` and `self.time_slots`.
 
-        Returns:
-            None
+        Primary Author:
+            Ryan Frampton
+
+        Techniques Demonstrated:
+            Sequence unpacking
         """
         for entry in unscheduled_tasks:
             task = entry["task"]
@@ -110,18 +132,25 @@ class TaskScheduler:
 
                 if remaining_time <= 0:
                     break
-    def reschedule_missed_tasks(self, tasks):
-        pass
-    
+                
     def get_data(self, filepath):
         """
-        Reads tasks and time slots from a JSON file and validates the structure.
+        Reads tasks and time slots from a JSON file and validates it.
         
         Args:
             filepath(str): Path to the JSON file. 
+        
+        Side effects:
+            Modifies "self.tasks" and "self.time_slots"
             
         Raises:
-            Exception: If the JSON file is invalid
+            FileNotFoundError: If the JSON file is invalid
+            
+        Primary Author:
+            Matthew Neufell
+
+        Techniques Demonstrated:
+            json.load(), with statement.
         """
         try:
             with open(filepath, 'r', encoding = "utf-8") as f:
@@ -144,6 +173,15 @@ class TaskScheduler:
     def print_schedule(self):
         """
         Prints the scheduled tasks in a readable format.
+        
+        Side Effects:
+            Outputs the formatted task schedule to the console.
+        
+        Primary Author:
+            Ryan Frampton
+
+        Techniques Demonstrated:
+            f-strings containing expressions.
         """
         print("Scheduled Tasks:")
         for entry in self.schedule:
@@ -154,6 +192,15 @@ class TaskScheduler:
         """
         Visualizes the daily distribution of tasks as a stacked bar chart,
         ensuring tasks are ordered by their start time within each day.
+        
+        Primary Author:
+            Saisidharth Seyyadri
+
+        Techniques Demonstrated:
+            DataFrame filtering and data visualization with pyplot.
+            
+        Side effects:
+            Generates and displays a graph.
         """
         if not self.schedule:
             print("No tasks scheduled to visualize.")
@@ -182,6 +229,15 @@ class TaskScheduler:
         
 
 def main():
+    """
+    Main function to parse command-line arguments and execute the TaskScheduler program.
+
+    Primary Author:
+        Matthew Neufell
+
+    Techniques Demonstrated:
+        ArgumentParser class.
+    """
     parser = ArgumentParser(description="Task Scheduler Program")
     parser.add_argument("--file", required=True, help="Path to the tasks JSON file")
     args = parser.parse_args()
