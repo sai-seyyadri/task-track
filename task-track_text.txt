@@ -1,5 +1,0 @@
-Our group name is Terps and the members are Matt Neufell, Ryan Frampton, and Sai Seyyadri.
-This project is a Task Management tool called Task Track. 
-
-The purpose of our project is to help the user better manage their schedule and
-have their work laid out so they can be more productive. 
